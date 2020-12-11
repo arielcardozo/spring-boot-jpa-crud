@@ -1,8 +1,11 @@
-package com.bezkoder.spring.datajpa.controller;
+package com.crud.spring.datajpa.controller;
 
-import com.bezkoder.spring.datajpa.model.Employee;
-import com.bezkoder.spring.datajpa.model.Tutorial;
-import com.bezkoder.spring.datajpa.repository.EmployeeRepository;
+import com.crud.spring.datajpa.model.Department;
+import com.crud.spring.datajpa.model.Employee;
+import com.crud.spring.datajpa.model.Position;
+import com.crud.spring.datajpa.repository.DepartmentRepository;
+import com.crud.spring.datajpa.repository.EmployeeRepository;
+import com.crud.spring.datajpa.repository.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api")
 public class EmployeeController {
@@ -20,8 +23,13 @@ public class EmployeeController {
 	@Autowired
 	EmployeeRepository employeeRepository;
 
+	@Autowired
+	DepartmentRepository departmentRepository;
+	@Autowired
+	PositionRepository positionRepository;
+
 	@GetMapping("/employees")
-	public ResponseEntity<List<Employee>> getAllTutorials(@RequestParam(required = false) String name) {
+	public ResponseEntity<List<Employee>> getAllEmployees(@RequestParam(required = false) String name) {
 		try {
 			List<Employee> employees = new ArrayList<Employee>();
 
@@ -51,35 +59,45 @@ public class EmployeeController {
 		}
 	}
 
+	@PostMapping("/departament/bulk")
+	public ResponseEntity<HttpStatus> createDepartmentBulk(@RequestBody List<Department> departments) {
+		try {
+			for (Department department : departments) {
+				Department _dep = departmentRepository.save(
+						new Department(
+								department.getId(),
+								department.getName()
+						)
+				);
+			}
+			return new ResponseEntity<>(null, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping("/position/bulk")
+	public ResponseEntity<HttpStatus> createPositionBulk(@RequestBody List<Position> positions) {
+		try {
+			for (Position position : positions) {
+				Position _dep = positionRepository.save(
+						new Position(
+								position.getId(),
+								position.getName()
+						)
+				);
+			}
+			return new ResponseEntity<>(null, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	@PostMapping("/employees/bulk")
 	public ResponseEntity<HttpStatus> createEmployee(@RequestBody List<Employee> employees) {
 		try {
 			for (Employee employee : employees) {
-
-			Employee _emp = employeeRepository
-					.save(new Employee(
-							employee.getName(),
-							employee.getNumber(),
-							employee.getState(),
-							employee.getZip(),
-							employee.getDOB(),
-							employee.getAge(),
-							employee.getSex(),
-							employee.getMaritalDesc(),
-							employee.getCitizenDesc(),
-							employee.getHispanicLatino(),
-							employee.getRaceDesc(),
-							employee.getDateOfHire(),
-							employee.getDateOfTermination(),
-							employee.getReasonOfTerm(),
-							employee.getStatus(),
-							employee.getDepartment(),
-							employee.getPosition(),
-							employee.getPayRate(),
-							employee.getManagerName(),
-							employee.getEmpSource(),
-							employee.getPerformanceScore())
-					);
+			employeeRepository
+					.save(employee);
 			}
 			return new ResponseEntity<>(null, HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -99,7 +117,7 @@ public class EmployeeController {
 							employee.getDOB(),
 							employee.getAge(),
 							employee.getSex(),
-							employee.getMaritalDesc(),
+							employee.getMaritalStatus(),
 							employee.getCitizenDesc(),
 							employee.getHispanicLatino(),
 							employee.getRaceDesc(),
@@ -107,12 +125,12 @@ public class EmployeeController {
 							employee.getDateOfTermination(),
 							employee.getReasonOfTerm(),
 							employee.getStatus(),
-							employee.getDepartment(),
 							employee.getPosition(),
 							employee.getPayRate(),
 							employee.getManagerName(),
 							employee.getEmpSource(),
-							employee.getPerformanceScore())
+							employee.getPerformanceScore(),
+							employee.getDepartment())
 					);
 			return new ResponseEntity<>(_emp, HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -131,7 +149,7 @@ public class EmployeeController {
 			_emp.setDOB(employee.getDOB());
 			_emp.setAge(employee.getAge());
 			_emp.setSex(employee.getSex());
-			_emp.setMaritalDesc(employee.getMaritalDesc());
+			_emp.setMaritalStatus(employee.getMaritalStatus());
 			_emp.setCitizenDesc(employee.getCitizenDesc());
 			_emp.setHispanicLatino(employee.getHispanicLatino());
 			_emp.setRaceDesc(employee.getRaceDesc());

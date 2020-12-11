@@ -1,4 +1,4 @@
-package com.bezkoder.spring.datajpa.model;
+package com.crud.spring.datajpa.model;
 
 import javax.persistence.*;
 import java.util.Date;

@@ -1,15 +1,18 @@
-package com.bezkoder.spring.datajpa.model;
+package com.crud.spring.datajpa.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.http.converter.json.GsonBuilderUtils;
-import org.w3c.dom.ls.LSOutput;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
+
+enum Sex {
+    MALE, FEMALE;
+}
 
 @Entity
 @Table(name = "employee")
-public class Employee {
+public class Employee implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,9 +34,9 @@ public class Employee {
     @Column(name = "age")
     private int age;
     @Column(name = "sex")
-    private String sex;
-    @Column(name = "maritalDesc")
-    private String maritalDesc;
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
+
     @Column(name = "citizenDesc")
     private String citizenDesc;
     @Column(name = "hispanicLatino")
@@ -50,10 +53,8 @@ public class Employee {
     private String reasonOfTerm;
     @Column(name = "status")
     private String status;
-    @Column(name = "Department")
-    private String department;
-    @Column(name = "position")
-    private String position;
+
+
     @Column(name = "payRate")
     private double payRate;
     @Column(name = "managerName")
@@ -63,10 +64,26 @@ public class Employee {
     @Column(name = "performanceScore")
     private String performanceScore;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "position_id", nullable = false)
+    private Position position;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "maritalstatus_id", nullable = false)
+    private MaritalStatus maritalStatus;
+
     public Employee() {
     }
 
-    public Employee(String name, int number, String state, String zip, Date DOB, int age, String sex, String maritalDesc, String citizenDesc, String hispanicLatino, String raceDesc, Date dateOfHire, Date dateOfTermination, String reasonOfTerm, String status, String department, String position, double payRate, String managerName, String empSource, String performanceScore) {
+    public Employee(String name, int number, String state, String zip,
+                    Date DOB, int age, Sex sex, MaritalStatus maritalStatus, String citizenDesc,
+                    String hispanicLatino, String raceDesc, Date dateOfHire, Date dateOfTermination,
+                    String reasonOfTerm, String status, Position position, double payRate,
+                    String managerName, String empSource, String performanceScore, Department department) {
         this.name = name;
         this.number = number;
         this.state = state;
@@ -74,7 +91,7 @@ public class Employee {
         this.DOB = DOB;
         this.age = age;
         this.sex = sex;
-        this.maritalDesc = maritalDesc;
+        this.maritalStatus = maritalStatus;
         this.citizenDesc = citizenDesc;
         this.hispanicLatino = hispanicLatino;
         this.raceDesc = raceDesc;
@@ -82,14 +99,23 @@ public class Employee {
         this.dateOfTermination = dateOfTermination;
         this.reasonOfTerm = reasonOfTerm;
         this.status = status;
-        this.department = department;
         this.position = position;
         this.payRate = payRate;
-        ManagerName = managerName;
+        this.ManagerName = managerName;
         this.empSource = empSource;
         this.performanceScore = performanceScore;
+        this.department = department;
     }
 
+    public Department getDepartment()
+    {
+        return department;
+    }
+
+    public void setDepartment(Department department)
+    {
+        this.department = department;
+    }
     public String getName() {
         return name;
     }
@@ -138,20 +164,21 @@ public class Employee {
         this.age = age;
     }
 
-    public String getSex() {
+    public Sex getSex() {
         return sex;
     }
 
-    public void setSex(String sex) {
+    public void setSex(Sex   sex) {
         this.sex = sex;
     }
 
-    public String getMaritalDesc() {
-        return maritalDesc;
+
+    public MaritalStatus getMaritalStatus() {
+        return maritalStatus;
     }
 
-    public void setMaritalDesc(String maritalDesc) {
-        this.maritalDesc = maritalDesc;
+    public void setMaritalStatus(MaritalStatus maritalStatus) {
+        this.maritalStatus = maritalStatus;
     }
 
     public String getCitizenDesc() {
@@ -210,19 +237,12 @@ public class Employee {
         this.status = status;
     }
 
-    public String getDepartment() {
-        return department;
-    }
 
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public String getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 

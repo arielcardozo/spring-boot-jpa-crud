@@ -1,7 +1,6 @@
-package com.bezkoder.spring.datajpa.repository;
+package com.crud.spring.datajpa.repository;
 
-import com.bezkoder.spring.datajpa.model.Employee;
-import com.bezkoder.spring.datajpa.model.Tutorial;
+import com.crud.spring.datajpa.model.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
